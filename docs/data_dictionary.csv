@@ -1,0 +1,10 @@
+Column,Desc
+zipcode,The US 5 digit zipcode. 99999 means missing
+val_month,the month as a digit 1-12.  Some data was aggregated from a weekly grain. Other was duplicated from a yearly grain to monthly.
+val_year,the year as a digit 1-12.
+home_value,the value of typical home in this given zipcode in the current month and year specified. value  in US dollars.  From Zillow
+home_sale_count,how many sold in the given zipcode in the last month
+income,the approximate mean adjusted gross income for households in the given zipcode.  See IRS documentation to explain ‘approximate’.
+mortgage_rate15,the average national rate for a 15 year fixed rate mortgage
+mortgage_rate30,the average national rate for a 30 year fixed rate mortgage
+unemployment_rate,the national unemployment rate.
