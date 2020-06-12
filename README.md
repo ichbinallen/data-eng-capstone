@@ -51,6 +51,6 @@ Average US unemployment rate.
 
 Source: [Saint Louis Fed]](https://fred.stlouisfed.org/series/UNRATE)
 
-![Unemployment Rates](/data/plots/unemployment.png)
+![Unemployment Rates](/data/plots/unemployment_rates.png)
 
 Grain is year.
