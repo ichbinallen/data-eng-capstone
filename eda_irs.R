@@ -7,6 +7,7 @@ library(ggplot2)
 library(dplyr)
 library(magrittr)
 library(scales)
+library(janitor)
 # library(seasonal)
 # library(xts)
 
@@ -26,11 +27,12 @@ read_irs = function(file, year) {
   irs = read.csv(file) %>%
     mutate(
       mean_agi_income = 1000 * A00100 / N00200, 
+      date = as.Date(paste0(year, "-01-01")),
       income_year = year,
       year_filed = year+1) %>%
     select(
-      STATEFIPS, STATE, ZIPCODE, A00100, N00200,  mean_agi_income, 
-      income_year, year_filed)
+      STATEFIPS, STATE, ZIPCODE, A00100, N00200,  mean_agi_income,
+      date, income_year, year_filed)
   return(irs)
 }
 
@@ -52,15 +54,10 @@ irs_df = do.call(rbind.data.frame, irs_list)
 # ------------------------------------------------------------------------------
 # ---- Make a plot
 # ------------------------------------------------------------------------------
-irs_mn = irs_df %>% filter(
-  ZIPCODE %in% c(55408, 55112, 55102)
-)
-
-irs_mn %>% 
-  mutate(
-    income_year = as.Date(paste0(income_year, "-01-01")),
-    ZIPCODE = as.factor(ZIPCODE)) %>%
-  ggplot(aes(x=income_year, y=mean_agi_income, color=ZIPCODE)) +
+irs_df %>% 
+  filter(ZIPCODE %in% c(55408, 55112, 55102)) %>%
+  mutate(ZIPCODE = as.factor(ZIPCODE)) %>%
+  ggplot(aes(x=date, y=mean_agi_income, color=ZIPCODE)) +
   geom_line() +
   scale_x_date(date_breaks = "1 year") +
   scale_y_continuous(labels=scales::dollar) +
@@ -69,3 +66,11 @@ irs_mn %>%
   ylab("Adjusted Gross Income (AGI)") +
   ggtitle("IRS Income (Average AGI by zip code)")
 ggsave(filename="./data/plots/income.png")
+
+# ------------------------------------------------------------------------------
+# ---- Write to Postgres
+# ------------------------------------------------------------------------------
+irs_df = clean_names(irs_df) %>% rename(value_date=date)
+conn = .conn_list$get_conn()
+DBI::dbWriteTable(conn, "irs", irs_df, append=T, row.names=F)
+DBI::dbDisconnect(conn)

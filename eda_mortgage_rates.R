@@ -31,14 +31,13 @@ if(!file.exists("./data/mortgage_rates/mortgage_rates.json")) {
 } else {
   mr = as.data.frame(fromJSON(
     txt="./data/mortgage_rates/mortgage_rates.json"
-  ))
+  )) %>% mutate(date=as.Date(date))
 }
 
 # ------------------------------------------------------------------------------
 # ---- Make a plot
 # ------------------------------------------------------------------------------
 mr %>% 
-  mutate(date = as.Date(date)) %>%
   ggplot(aes(x=date, y=mortgage_rate / 100, color=loan_length)) +
   geom_line() +
   scale_x_date(date_breaks = "3 years") +
@@ -48,3 +47,13 @@ mr %>%
   ylab("Mortage Rate") +
   ggtitle("Countrywide mortgage rates")
 ggsave(filename="./data/plots/mortgage_rates.png")
+
+# ------------------------------------------------------------------------------
+# ---- Write to Postgres
+# ------------------------------------------------------------------------------
+mr = clean_names(mr) %>% 
+  rename(mortgage_date=date) %>% 
+  select(mortgage_date, mortgage_rate, loan_length)
+conn = .conn_list$get_conn()
+DBI::dbWriteTable(conn, "mortgage_rates", mr, append=T, row.names=F)
+DBI::dbDisconnect(conn)

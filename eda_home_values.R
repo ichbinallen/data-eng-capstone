@@ -20,8 +20,9 @@ hv = read.csv("./data/home_values/Zip_Zhvi_SingleFamilyResidence.csv")
 id_names = names(hv)[grep("^X", x=names(hv), invert=T)]
 hv_long = melt(
   hv, id.vars=id_names, variable.name="date", value.name="home_value") %>%
-  mutate(date = gsub("^X", "", date))
-
+  mutate(
+    date = as.Date(gsub("^X", "", date), "%Y.%m.%d")
+  )
 
 # ------------------------------------------------------------------------------
 # ---- Make a plot
@@ -29,10 +30,8 @@ hv_long = melt(
 mn_zips = hv_long %>% 
   filter(RegionName %in% c("55408", "55112", "55102")) %>%
   mutate(
-    date = as.Date(date, format="%Y.%m.%d"),
     RegionName = as.factor(RegionName)
   )
-head(mn_zips)
 
 mn_zips %>% ggplot(aes(x=date, y=home_value, color=RegionName)) +
   geom_line() +
@@ -42,5 +41,12 @@ mn_zips %>% ggplot(aes(x=date, y=home_value, color=RegionName)) +
   xlab("") +
   ylab("Home Value") +
   ggtitle("Zillow Home value ('Typical' price by zip code)")
-mn_zips
 ggsave(filename="./data/plots/home_values.png")
+
+# ------------------------------------------------------------------------------
+# ---- Write to Postgres
+# ------------------------------------------------------------------------------
+hv_long = clean_names(hv_long) %>% rename(value_date=date)
+conn = .conn_list$get_conn()
+DBI::dbWriteTable(conn, "home_values", hv_long, append=T, row.names=F)
+DBI::dbDisconnect(conn)

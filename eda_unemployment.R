@@ -27,3 +27,12 @@ unemp %>% ggplot(aes(x=DATE, y=UNRATE / 100)) +
   ylab("Unemployment Rate") +
   ggtitle("US Unemployment rates")
 ggsave(filename="./data/plots/unemployment_rates.png")
+
+# ------------------------------------------------------------------------------
+# ---- Write to Postgres
+# ------------------------------------------------------------------------------
+unemp = clean_names(unemp) %>% 
+  rename(unemployment_date = date, unemployment_rate = unrate)
+conn = .conn_list$get_conn()
+DBI::dbWriteTable(conn, "unemployment", unemp, append=T, row.names=F)
+DBI::dbDisconnect(conn)
