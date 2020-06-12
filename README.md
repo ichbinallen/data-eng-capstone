@@ -3,6 +3,20 @@
 This project makes available a collection of datasets related to the real
 estate, housing prices and ecconomic influences.
 
+### Write Up
+This project reads csv and json files into R, performs ETL, creates dimension
+tables, and writes a resulting fact table into a Postgresql database.
+
+If the data was increased 100 fold, sparklyr should be used to perform the
+joins
+
+If the pipelines need to be run on a daily basis, apache airflow would provide
+a convenient data pipeline and automation for the ETL.
+
+If the database needed to be accessed by numereous users, read access would
+become the bottleneck for postgres.  Instead, a cloud database such as AWS
+Redshift or a distributed database like Hive would be a better choice.
+
 ### Raw Data Sources
 
 #### Home Sales
@@ -42,6 +56,8 @@ Average US wide mortgage rates for fixed rate 30 year and 15 year loans.
 
 Source: [Saint Louis Fed]](https://fred.stlouisfed.org/categories/114)
 
+Format: JSON
+
 ![Mortgage Rates](/data/plots/mortgage_rates.png)
 
 Grain is year/loan_length.
@@ -54,3 +70,7 @@ Source: [Saint Louis Fed]](https://fred.stlouisfed.org/series/UNRATE)
 ![Unemployment Rates](/data/plots/unemployment_rates.png)
 
 Grain is year.
+
+### Resulting Star Schema:
+
+![Star Schema](/docs/star_schema.png)
