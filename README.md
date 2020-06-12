@@ -8,6 +8,8 @@ estate, housing prices and ecconomic influences.
 #### Home Sales
 Number of home sales per month.
 
+![Home Sales](/data/plots/home_sales.png)
+
 Source: [Zillow Inventory and sales](https://www.zillow.com/research/data/) 
 
 Grain is month/zip code.
@@ -16,6 +18,8 @@ Grain is month/zip code.
 Value of the average home in a zip code.
 
 Source: [Zillow Home Values](https://www.zillow.com/research/data/) 
+
+![Home Values](/data/plots/home_values.png)
 
 Grain is month/zip code.
 
@@ -29,6 +33,8 @@ zip code.
 
 Source: [SOI Tax Stats](https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-2017-zip-code-data-soi) 
 
+![IRS Adjusted Gross Income](/data/plots/income.png)
+
 Grain is year/zip code.
 
 #### Mortage Rates
@@ -36,11 +42,15 @@ Average US wide mortgage rates for fixed rate 30 year and 15 year loans.
 
 Source: [Saint Louis Fed]](https://fred.stlouisfed.org/categories/114)
 
+![Mortgage Rates](/data/plots/mortgage_rates.png)
+
 Grain is year/loan_length.
 
 #### Unemployment
 Average US unemployment rate.
 
 Source: [Saint Louis Fed]](https://fred.stlouisfed.org/series/UNRATE)
+
+![Unemployment Rates](/data/plots/unemployment.png)
 
 Grain is year.
